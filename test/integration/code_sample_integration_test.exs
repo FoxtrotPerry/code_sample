@@ -42,9 +42,35 @@ defmodule CodeSampleIntegrationTest do
     end
   end
 
-  test "We can add a comment to a file"
+  test "We can add a comment to a file", context do
+    # Create comment and save response
+    response = CodeSample.create_comment!("Test Comment!", context[:file_id], CodeSample.Authentication.get_token)
+    # Save new comment's ID
+    new_comment_id = Map.get(response, "id")
+    # From response, parse message
+    new_comment = Map.get(response, "message")
+    # Compare parsed message to what it should be
+    assert new_comment == "Test Comment!"
+  end
 
-  test "We can delete a comment from a file"
+  test "We can delete a comment from a file", context do
+    # Create comment to be deleted
+    response = CodeSample.create_comment!("Test Comment!", context[:file_id], CodeSample.Authentication.get_token)
+    # Save created comment's ID from response
+    new_comment_id = Map.get(response, "id")
+    # Delete message and check that 204 was the recieved code (indicating successful deletion)
+    assert CodeSample.delete_comment!(new_comment_id, CodeSample.Authentication.get_token) == 204
+  end
 
-  test "We can modify a comment on a file"
+  test "We can modify a comment on a file" context do
+    # Create comment to be updated in the future
+    response = CodeSample.create_comment!("Test Comment!", context[:file_id], CodeSample.Authentication.get_token)
+    # Save the new comment's ID
+    new_comment_id = Map.get(response, "id")
+    # Update the previously created comment
+    update_response = CodeSample.update_comment!("Updated Comment!", new_comment_id, CodeSample.Authentication.get_token)
+    # Save updated comment's message
+    updated_comment_message = Map.get(update_response, "message")
+    # Compare updated comment's message to what it should be
+    assert updated_comment_message = "Updated Comment!"
 end

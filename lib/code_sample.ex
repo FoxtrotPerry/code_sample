@@ -34,6 +34,15 @@ defmodule CodeSample do
     end 
   end
 
+  def create_comment!(comment, file_id, token) do
+    case delete_comment(comment, file_id, token) do
+      {:ok, comment_id} ->
+        comment_id
+      {_, error} ->
+        raise error
+    end
+  end
+
   @spec update_comment(String.t, String.t, String.t) :: {:ok , String.t} | {:auth_failure, String.t} | {:error, String.t}
   def update_comment(new_comment, comment_id, token) do
     case HTTPoison.put!("https://api.box.com/2.0/comments/#{comment_id}", Poison.encode!(%{"message": "#{new_comment}"}), %{Authentication: "Bearer #{token}"}) do
@@ -49,6 +58,15 @@ defmodule CodeSample do
     end
   end
 
+  def update_comment!(new_comment, file_id, token) do
+    case delete_comment(new_comment, file_id, token) do
+      {:ok, comment_id} ->
+        comment_id
+      {_, error} ->
+        raise error
+    end
+  end
+
   @spec delete_comment(String.t, String.t) :: {:ok, String.t} | {:auth_failure, String.t} | {:error, String.t}
   def delete_comment(comment_id, token) do
     case HTTPoison.delete!("https://api.box.com/2.0/comments/#{comment_id}", Poison.encode!(%{Authentication: "Bearer #{token}"})) do
@@ -58,6 +76,15 @@ defmodule CodeSample do
         {:auth_failure, "Failed to delete comment with ID: #{comment_id}. Authorization is invalid"}
       %{status_code: code, body: body} ->
         {:error, "Failed to delete comment with ID: #{comment_id}. DELETE recieved #{code}: #{Poison.decode!(body)}"}
+    end
+  end
+
+  def delete_comment!(comment_id, token) do
+    case delete_comment(file_id, token) do
+      {:ok, _} ->
+        :ok
+      {_, error} ->
+        raise error
     end
   end
 end

@@ -34,6 +34,10 @@ defmodule CodeSample do
     end 
   end
 
+  @doc """
+  create_comment! works exactly like create_comment but will raise exception in the vent of a comment creation error
+  """
+
   def create_comment!(comment, file_id, token) do
     case delete_comment(comment, file_id, token) do
       {:ok, comment_id} ->
@@ -58,6 +62,10 @@ defmodule CodeSample do
     end
   end
 
+  @doc """
+  update_comment! works exactly like update_comment but will raise exception in the vent of an update error
+  """
+
   def update_comment!(new_comment, file_id, token) do
     case delete_comment(new_comment, file_id, token) do
       {:ok, comment_id} ->
@@ -70,7 +78,7 @@ defmodule CodeSample do
   @spec delete_comment(String.t, String.t) :: {:ok, String.t} | {:auth_failure, String.t} | {:error, String.t}
   def delete_comment(comment_id, token) do
     case HTTPoison.delete!("https://api.box.com/2.0/comments/#{comment_id}", Poison.encode!(%{Authentication: "Bearer #{token}"})) do
-      %{status_code: 204} ->
+      %{status_code: 204} -> # 204 is the proper response for a successful deletion
         {:ok, "Successfully deleted comment with ID: #{comment_id}"}
       %{status_code: 401} ->
         {:auth_failure, "Failed to delete comment with ID: #{comment_id}. Authorization is invalid"}
@@ -78,6 +86,10 @@ defmodule CodeSample do
         {:error, "Failed to delete comment with ID: #{comment_id}. DELETE recieved #{code}: #{Poison.decode!(body)}"}
     end
   end
+
+  @doc """
+  delete_comment! works exactly like delete_comment but will raise exception in the vent of a deletion error
+  """
 
   def delete_comment!(comment_id, token) do
     case delete_comment(file_id, token) do

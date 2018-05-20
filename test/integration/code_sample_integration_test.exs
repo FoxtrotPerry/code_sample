@@ -62,7 +62,7 @@ defmodule CodeSampleIntegrationTest do
     assert CodeSample.delete_comment!(new_comment_id, CodeSample.Authentication.get_token) == 204
   end
 
-  test "We can modify a comment on a file" context do
+  test "We can modify a comment on a file", context do
     # Create comment to be updated in the future
     response = CodeSample.create_comment!("Test Comment!", context[:file_id], CodeSample.Authentication.get_token)
     # Save the new comment's ID
@@ -73,4 +73,5 @@ defmodule CodeSampleIntegrationTest do
     updated_comment_message = Map.get(update_response, "message")
     # Compare updated comment's message to what it should be
     assert updated_comment_message = "Updated Comment!"
+  end
 end

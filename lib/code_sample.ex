@@ -39,7 +39,7 @@ defmodule CodeSample do
   """
 
   def create_comment!(comment, file_id, token) do
-    case delete_comment(comment, file_id, token) do
+    case create_comment(comment, file_id, token) do
       {:ok, comment_id} ->
         comment_id
       {_, error} ->
@@ -67,7 +67,7 @@ defmodule CodeSample do
   """
 
   def update_comment!(new_comment, file_id, token) do
-    case delete_comment(new_comment, file_id, token) do
+    case update_comment(new_comment, file_id, token) do
       {:ok, comment_id} ->
         comment_id
       {_, error} ->
@@ -92,7 +92,7 @@ defmodule CodeSample do
   """
 
   def delete_comment!(comment_id, token) do
-    case delete_comment(file_id, token) do
+    case delete_comment(comment_id, token) do
       {:ok, _} ->
         :ok
       {_, error} ->
